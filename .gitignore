@@ -1,0 +1,6 @@
+*.user*
+*~*
+*.autosave
+*.exe
+*.so*
+build-*/
