@@ -10,6 +10,8 @@ class MainWindow : public QWidget {
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
+public slots:
+    void updatePicture();
 private:
     QLabel picLabel;
     Screen *screen;
