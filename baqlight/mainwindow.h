@@ -11,6 +11,7 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 public slots:
+    void delayedScrenshot();
     void updatePicture();
 private:
     QLabel picLabel;

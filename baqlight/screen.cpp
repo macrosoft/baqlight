@@ -15,9 +15,11 @@ QColor Screen::getAvgColor(int x, int y, int w, int h) {
     quint64 g = 0;
     quint64 b = 0;
     quint64 count = 0;
-    for (int dx = x; dx < w; ++dx) {
-        for (int dy = y; dy < h; ++dy) {
-            QColor pixel(screenshot.pixel(x + dx, y + dy));
+    int width = x + w;
+    int height = y + h;
+    for (int dx = x; dx < width; ++dx) {
+        for (int dy = y; dy < height; ++dy) {
+            QColor pixel(screenshot.pixel(dx, dy));
             if (pixel.valueF() > 0.10) {
                 count++;
                 r += pixel.red();
@@ -31,9 +33,13 @@ QColor Screen::getAvgColor(int x, int y, int w, int h) {
     color.setRed(r/count);
     color.setGreen(g/count);
     color.setBlue(b/count);
-    qreal saturation = color.hsvSaturationF()*2.0;
-    qreal value = qMax(0.25, color.valueF());
-    color.setHsvF(color.hsvHueF(), saturation, value);
+    qreal saturation = qMin(1.0, color.hsvSaturationF()*1.5);
+    color.setHsvF(color.hsvHueF(), saturation, color.valueF());
+    int lightness = (color.red() + color.green() + color.blue())/3;
+    if (lightness < 64) {
+        int diff = (64 - lightness)/3;
+        color.setRgb(color.red() + diff, color.green() + diff, color.blue() + diff);
+    }
     return color;
 }
 
