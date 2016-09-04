@@ -17,8 +17,9 @@ QColor Screen::getAvgColor(int x, int y, int w, int h) {
     quint64 count = 0;
     int width = x + w;
     int height = y + h;
-    for (int dx = x; dx < width; ++dx) {
-        for (int dy = y; dy < height; ++dy) {
+    const int step = 9;
+    for (int dx = x + step/2; dx < width; dx += step) {
+        for (int dy = y + step/2; dy < height; dy += step) {
             QColor pixel(screenshot.pixel(dx, dy));
             if (pixel.valueF() > 0.10) {
                 count++;
@@ -29,7 +30,7 @@ QColor Screen::getAvgColor(int x, int y, int w, int h) {
         }
     }
     QColor color;
-    count = qMax(count, quint64(w*h*0.1));
+    count = qMax(count, quint64(w*h*0.1/step/step));
     color.setRed(r/count);
     color.setGreen(g/count);
     color.setBlue(b/count);
