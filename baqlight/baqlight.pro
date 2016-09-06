@@ -9,4 +9,5 @@ SOURCES += main.cpp\
     screen.cpp
 
 HEADERS  += mainwindow.h \
-    screen.h
+    screen.h \
+    constants.h

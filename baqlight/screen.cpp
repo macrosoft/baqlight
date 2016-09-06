@@ -1,9 +1,9 @@
 #include "screen.h"
+#include "constants.h"
 #include <QGuiApplication>
 #include <QScreen>
 
 Screen::Screen(QObject *parent) : QObject(parent) {
-
 }
 
 QPixmap Screen::getShot() {
@@ -17,9 +17,8 @@ QColor Screen::getAvgColor(int x, int y, int w, int h) {
     quint64 count = 0;
     int width = x + w;
     int height = y + h;
-    const int step = 9;
-    for (int dx = x + step/2; dx < width; dx += step) {
-        for (int dy = y + step/2; dy < height; dy += step) {
+    for (int dx = x + AVG_COLOR_STEP/2; dx < width; dx += AVG_COLOR_STEP) {
+        for (int dy = y + AVG_COLOR_STEP/2; dy < height; dy += AVG_COLOR_STEP) {
             QColor pixel(screenshot.pixel(dx, dy));
             if (pixel.valueF() > 0.10) {
                 count++;
@@ -30,12 +29,10 @@ QColor Screen::getAvgColor(int x, int y, int w, int h) {
         }
     }
     QColor color;
-    count = qMax(count, quint64(w*h*0.1/step/step));
+    count = qMax(count, quint64(w*h*0.1/AVG_COLOR_STEP/AVG_COLOR_STEP));
     color.setRed(r/count);
     color.setGreen(g/count);
     color.setBlue(b/count);
-    qreal saturation = qMin(1.0, color.hsvSaturationF()*1.5);
-    color.setHsvF(color.hsvHueF(), saturation, color.valueF());
     int lightness = (color.red() + color.green() + color.blue())/3;
     if (lightness < 64) {
         int diff = (64 - lightness)/3;
@@ -47,4 +44,5 @@ QColor Screen::getAvgColor(int x, int y, int w, int h) {
 void Screen::capture() {
     QScreen *screen = QGuiApplication::primaryScreen();
     screenshot = screen->grabWindow(0).toImage();
+
 }

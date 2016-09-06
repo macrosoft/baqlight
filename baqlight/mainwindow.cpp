@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "constants.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QWidget(parent) {
@@ -27,12 +28,12 @@ void MainWindow::updatePicture() {
     QPixmap screenshot = screen->getShot();
     QPainter *painter = new QPainter(&screenshot);
     for (int i = 6; i >= 0; --i) {
-        int y = 1050 - 105;
+        int y = SCREEN_HEIGHT - 105;
         int x = 105*i;
         QColor avgColor = screen->getAvgColor(x, y, 105, 105);
         painter->setBrush(avgColor);
         painter->setPen(avgColor);
-        painter->drawRect(x, 1030, 105, 20);
+        painter->drawRect(x, SCREEN_HEIGHT - 20, 105, 20);
     }
     for (int i = 9; i >= 0; --i) {
         int y = 105*i;
@@ -52,19 +53,19 @@ void MainWindow::updatePicture() {
     }
     for (int i = 0; i < 10; ++i) {
         int y = 105*i;
-        int x = 1680 - 105;
+        int x = SCREEN_WIDTH - 105;
         QColor avgColor = screen->getAvgColor(x, y, 105, 105);
         painter->setBrush(avgColor);
         painter->setPen(avgColor);
-        painter->drawRect(1660, y, 20, 105);
+        painter->drawRect(SCREEN_WIDTH - 20, y, 20, 105);
     }
     for (int i = 0; i < 7; i++) {
-        int y = 1050 - 105;
+        int y = SCREEN_HEIGHT - 105;
         int x = 105*(i+9);
         QColor avgColor = screen->getAvgColor(x, y, 105, 105);
         painter->setBrush(avgColor);
         painter->setPen(avgColor);
-        painter->drawRect(x, 1030, 105, 20);
+        painter->drawRect(x, SCREEN_HEIGHT - 20, 105, 20);
     }
     picLabel.setPixmap(screenshot.scaled(picLabel.size(), Qt::KeepAspectRatio));
 }
