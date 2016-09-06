@@ -6,8 +6,10 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    screen.cpp
+    screen.cpp \
+    rgbledpixel.cpp
 
 HEADERS  += mainwindow.h \
     screen.h \
-    constants.h
+    constants.h \
+    rgbledpixel.h

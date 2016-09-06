@@ -11,7 +11,46 @@ MainWindow::MainWindow(QWidget *parent)
     connect(updateButton, SIGNAL(clicked(bool)), SLOT(delayedScrenshot()));
     layout->addWidget(&picLabel);
     screen = new Screen(this);
-    screen->capture();
+    for (int i = 6; i >= 0; --i) {
+        RgbLedPixel *pixel = new RgbLedPixel();
+        pixels.append(pixel);
+        int x = PIXEL_SIZE*i;
+        int y = SCREEN_HEIGHT - PIXEL_SIZE;
+        pixel->setRect(QRect(x, y, PIXEL_SIZE, PIXEL_SIZE));
+        pixel->setAlignment(Qt::AlignBottom);
+    }
+    for (int i = 9; i >= 0; --i) {
+        RgbLedPixel *pixel = new RgbLedPixel();
+        pixels.append(pixel);
+        int x = 0;
+        int y = PIXEL_SIZE*i;
+        pixel->setRect(QRect(x, y, PIXEL_SIZE, PIXEL_SIZE));
+        pixel->setAlignment(Qt::AlignLeft);
+    }
+    for (int i = 0; i < 16; i++) {
+        RgbLedPixel *pixel = new RgbLedPixel();
+        pixels.append(pixel);
+        int x = PIXEL_SIZE*i;
+        int y = 0;
+        pixel->setRect(QRect(x, y, PIXEL_SIZE, PIXEL_SIZE));
+        pixel->setAlignment(Qt::AlignTop);
+    }
+    for (int i = 0; i < 10; ++i) {
+        RgbLedPixel *pixel = new RgbLedPixel();
+        pixels.append(pixel);
+        int x = SCREEN_WIDTH - PIXEL_SIZE;
+        int y = PIXEL_SIZE*i;
+        pixel->setRect(QRect(x, y, PIXEL_SIZE, PIXEL_SIZE));
+        pixel->setAlignment(Qt::AlignRight);
+    }
+    for (int i = 0; i < 7; i++) {
+        RgbLedPixel *pixel = new RgbLedPixel();
+        pixels.append(pixel);
+        int x = PIXEL_SIZE*(i + 9);
+        int y = SCREEN_HEIGHT - PIXEL_SIZE;
+        pixel->setRect(QRect(x, y, PIXEL_SIZE, PIXEL_SIZE));
+        pixel->setAlignment(Qt::AlignBottom);
+    }
     updatePicture();
 }
 
@@ -27,45 +66,30 @@ void MainWindow::updatePicture() {
     screen->capture();
     QPixmap screenshot = screen->getShot();
     QPainter *painter = new QPainter(&screenshot);
-    for (int i = 6; i >= 0; --i) {
-        int y = SCREEN_HEIGHT - 105;
-        int x = 105*i;
-        QColor avgColor = screen->getAvgColor(x, y, 105, 105);
-        painter->setBrush(avgColor);
-        painter->setPen(avgColor);
-        painter->drawRect(x, SCREEN_HEIGHT - 20, 105, 20);
-    }
-    for (int i = 9; i >= 0; --i) {
-        int y = 105*i;
-        int x = 0;
-        QColor avgColor = screen->getAvgColor(x, y, 105, 105);
-        painter->setBrush(avgColor);
-        painter->setPen(avgColor);
-        painter->drawRect(x, y, 20, 105);
-    }
-    for (int i = 0; i < 16; i++) {
-        int y = 0;
-        int x = 105*i;
-        QColor avgColor = screen->getAvgColor(x, y, 105, 105);
-        painter->setBrush(avgColor);
-        painter->setPen(avgColor);
-        painter->drawRect(x, y, 105, 20);
-    }
-    for (int i = 0; i < 10; ++i) {
-        int y = 105*i;
-        int x = SCREEN_WIDTH - 105;
-        QColor avgColor = screen->getAvgColor(x, y, 105, 105);
-        painter->setBrush(avgColor);
-        painter->setPen(avgColor);
-        painter->drawRect(SCREEN_WIDTH - 20, y, 20, 105);
-    }
-    for (int i = 0; i < 7; i++) {
-        int y = SCREEN_HEIGHT - 105;
-        int x = 105*(i+9);
-        QColor avgColor = screen->getAvgColor(x, y, 105, 105);
-        painter->setBrush(avgColor);
-        painter->setPen(avgColor);
-        painter->drawRect(x, SCREEN_HEIGHT - 20, 105, 20);
+    foreach (RgbLedPixel *pixel, pixels) {
+        pixel->setColor(screen->getAvgColor(pixel->getRect()));
+        painter->setBrush(pixel->getColor());
+        painter->setPen(pixel->getColor());
+        QRect r = pixel->getRect();
+        switch (pixel->getAlignment()) {
+        case Qt::AlignBottom:
+            r.setTop(r.top() + PIXEL_SIZE - 20);
+            r.setHeight(20);
+            break;
+        case Qt::AlignLeft:
+            r.setWidth(20);
+            break;
+        case Qt::AlignTop:
+            r.setHeight(20);
+            break;
+        case Qt::AlignRight:
+            r.setLeft(r.left() + PIXEL_SIZE - 20);
+            r.setWidth(20);
+            break;
+        default:
+            break;
+        }
+        painter->drawRect(r);
     }
     picLabel.setPixmap(screenshot.scaled(picLabel.size(), Qt::KeepAspectRatio));
 }

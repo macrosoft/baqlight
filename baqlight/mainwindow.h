@@ -3,6 +3,7 @@
 
 #include <QtWidgets>
 #include "screen.h"
+#include "rgbledpixel.h"
 
 class MainWindow : public QWidget {
     Q_OBJECT
@@ -16,6 +17,7 @@ public slots:
 private:
     QLabel picLabel;
     Screen *screen;
+    QVector<RgbLedPixel *> pixels;
     void resizeEvent(QResizeEvent *);
 };
 
