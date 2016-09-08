@@ -5,17 +5,20 @@
 #include <QImage>
 #include <QPixmap>
 #include <QRect>
+#include "rgbledpixel.h"
 
 class Screen : public QObject {
     Q_OBJECT
 public:
     explicit Screen(QObject *parent = 0);
-    QColor getAvgColor(const QRect rect);
     QPixmap getShot();
     void capture();
+    const RgbLedPixel *getPixel(const int i);
 private:
     QImage screenshot;
-    quint64 maxCount;
+    quint64 minCount;
+    QVector<RgbLedPixel *> pixels;
+    void updatePixelColor(RgbLedPixel *pixel);
 };
 
 #endif // SCREEN_H
