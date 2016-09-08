@@ -13,6 +13,7 @@ SerialThread::SerialThread(QObject *parent) : QThread(parent) {
     serial.setStopBits(QSerialPort::OneStop);
     serial.setFlowControl(QSerialPort::NoFlowControl);
     serial.moveToThread(this);
+    stop = false;
 }
 
 void SerialThread::run() {
@@ -21,9 +22,20 @@ void SerialThread::run() {
     QElapsedTimer timer;
     timer.start();
     while (1) {
+        if (stop)
+            break;
         serial.write(data);
         serial.waitForBytesWritten(1000);
         qDebug() << "time: " << timer.elapsed();
+    }
+}
+
+void SerialThread::pauseOrResume() {
+    if (isRunning()) {
+        stop = true;
+    } else {
+        stop = false;
+        start();
     }
 }
 

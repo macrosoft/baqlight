@@ -1,17 +1,15 @@
 #include "mainwindow.h"
-#include "serialthread.h"
+#include "systemtrayicon.h"
 #include <QApplication>
-#include <QSystemTrayIcon>
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
-    QSystemTrayIcon trayIcon;
-    trayIcon.setIcon(QIcon(":/res/icon.png"));
-    trayIcon.show();
+    a.setQuitOnLastWindowClosed(false);
     SerialThread thread;
+    SystemTrayIcon trayIcon(&thread);
+    trayIcon.show();
+    MainWindow window;
     thread.start();
-    MainWindow w;
-    w.show();
-
+    QObject::connect(&trayIcon, SIGNAL(openSettings()), &window, SLOT(show()));
     return a.exec();
 }
