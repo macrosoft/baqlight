@@ -15,3 +15,6 @@ HEADERS  += mainwindow.h \
     constants.h \
     rgbledpixel.h \
     serialthread.h
+
+RESOURCES += \
+    res.qrc
