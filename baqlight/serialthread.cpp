@@ -4,7 +4,7 @@
 #include <QElapsedTimer>
 #include <QDebug>
 
-SerialThread::SerialThread(QObject *parent) : QThread(parent) {
+SerialThread::SerialThread(Screen *s, QObject *parent) : QThread(parent), screen(s) {
     serial.setPortName("/dev/ttyS0"); //change!
     serial.open(QIODevice::ReadWrite);
     serial.setBaudRate(QSerialPort::Baud9600);
@@ -18,12 +18,20 @@ SerialThread::SerialThread(QObject *parent) : QThread(parent) {
 
 void SerialThread::run() {
     QByteArray data;
-    data.resize(50*3 + 5);
     QElapsedTimer timer;
     timer.start();
     while (1) {
         if (stop)
             break;
+        screen->capture();
+        data.clear();
+        data.append("baqlt", 5);
+        for (int i = 0; i < PIXEL_COUNT; i++) {
+            QColor color = screen->getPixel(i)->getColor();
+            data.append(quint8(color.red()));
+            data.append(quint8(color.green()));
+            data.append(quint8(color.blue()));
+        }
         serial.write(data);
         serial.waitForBytesWritten(1000);
         qDebug() << "time: " << timer.elapsed();

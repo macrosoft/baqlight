@@ -8,7 +8,7 @@ class MainWindow : public QWidget {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = 0);
+    MainWindow(Screen *s, QWidget *parent = 0);
     ~MainWindow();
 public slots:
     void delayedScrenshot();

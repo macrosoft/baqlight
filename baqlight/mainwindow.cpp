@@ -2,8 +2,8 @@
 #include "constants.h"
 #include "rgbledpixel.h"
 
-MainWindow::MainWindow(QWidget *parent)
-    : QWidget(parent) {
+MainWindow::MainWindow(Screen *s, QWidget *parent)
+    : QWidget(parent), screen(s) {
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
     setLayout(layout);
@@ -11,7 +11,6 @@ MainWindow::MainWindow(QWidget *parent)
     layout->addWidget(updateButton);
     connect(updateButton, SIGNAL(clicked(bool)), SLOT(delayedScrenshot()));
     layout->addWidget(&picLabel);
-    screen = new Screen(this);
     updatePicture();
 }
 
