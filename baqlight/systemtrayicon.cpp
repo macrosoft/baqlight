@@ -1,7 +1,7 @@
 #include "systemtrayicon.h"
 #include <QApplication>
 
-SystemTrayIcon::SystemTrayIcon(SerialThread *t, QObject *parent) : thread(t), QSystemTrayIcon(parent) {
+SystemTrayIcon::SystemTrayIcon(SerialThread *t, QObject *parent) : QSystemTrayIcon(parent), thread(t) {
     setIcon(QIcon(":/res/icon.png"));
     connect(&menu, SIGNAL(aboutToShow()), SLOT(onOpenMenu()));
     QAction *action;

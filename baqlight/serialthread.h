@@ -3,6 +3,7 @@
 
 #include <QThread>
 #include <QSerialPort>
+#include <QMutex>
 #include "screen.h"
 
 class SerialThread : public QThread {
@@ -14,8 +15,11 @@ public slots:
     void pauseOrResume();
 private:
     Screen *screen;
+    QMutex mutex;
     QSerialPort serial;
     bool stop;
+
+    void timerEvent(QTimerEvent *);
 };
 
 #endif // SERIALTHREAD_H

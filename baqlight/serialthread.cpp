@@ -14,6 +14,7 @@ SerialThread::SerialThread(Screen *s, QObject *parent) : QThread(parent), screen
     serial.setFlowControl(QSerialPort::NoFlowControl);
     serial.moveToThread(this);
     stop = false;
+    startTimer(250, Qt::CoarseTimer);
 }
 
 void SerialThread::run() {
@@ -23,6 +24,7 @@ void SerialThread::run() {
     while (1) {
         if (stop)
             break;
+        mutex.lock();
         screen->capture();
         data.clear();
         data.append("baqlt", 5);
@@ -47,3 +49,6 @@ void SerialThread::pauseOrResume() {
     }
 }
 
+void SerialThread::timerEvent(QTimerEvent *) {
+    mutex.unlock();
+}
