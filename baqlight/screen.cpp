@@ -1,10 +1,12 @@
 #include "screen.h"
+#include "settingsfactory.h"
 #include "constants.h"
 #include <QGuiApplication>
 #include <QScreen>
 
 Screen::Screen(QObject *parent) : QObject(parent) {
     minCount = PIXEL_SIZE*PIXEL_SIZE*0.2/AVG_COLOR_STEP/AVG_COLOR_STEP;
+    QVariantMap *settings = SettingsFactory::getSettings();
     for (int i = 6; i >= 0; --i) {
         RgbLedPixel *pixel = new RgbLedPixel();
         pixels.append(pixel);

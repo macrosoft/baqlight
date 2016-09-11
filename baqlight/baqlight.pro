@@ -9,14 +9,16 @@ SOURCES += main.cpp\
     screen.cpp \
     rgbledpixel.cpp \
     serialthread.cpp \
-    systemtrayicon.cpp
+    systemtrayicon.cpp \
+    settingsfactory.cpp
 
 HEADERS  += mainwindow.h \
     screen.h \
     constants.h \
     rgbledpixel.h \
     serialthread.h \
-    systemtrayicon.h
+    systemtrayicon.h \
+    settingsfactory.h
 
 RESOURCES += \
     res.qrc
