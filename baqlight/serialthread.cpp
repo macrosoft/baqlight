@@ -50,5 +50,6 @@ void SerialThread::pauseOrResume() {
 }
 
 void SerialThread::timerEvent(QTimerEvent *) {
-    mutex.unlock();
+    if (mutex.tryLock())
+        mutex.unlock();
 }
