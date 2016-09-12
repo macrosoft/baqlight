@@ -1,9 +1,11 @@
 #include "mainwindow.h"
 #include "constants.h"
 #include "rgbledpixel.h"
+#include "settingsfactory.h"
 
 MainWindow::MainWindow(Screen *s, QWidget *parent)
     : QWidget(parent), screen(s) {
+    setMinimumSize(640, 480);
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setMargin(0);
     setLayout(layout);
@@ -14,6 +16,12 @@ MainWindow::MainWindow(Screen *s, QWidget *parent)
     sidebar->addWidget(updateButton);
     connect(updateButton, SIGNAL(clicked(bool)), SLOT(delayedScrenshot()));
     sidebar->addStretch();
+    QPushButton *saveButton = new QPushButton(tr("Save"));
+    sidebar->addWidget(saveButton);
+    connect(saveButton, SIGNAL(clicked(bool)), SLOT(save()));
+    QPushButton *cancelButton = new QPushButton(tr("Cancel"));
+    sidebar->addWidget(cancelButton);
+    connect(cancelButton, SIGNAL(clicked(bool)), SLOT(close()));
 }
 
 MainWindow::~MainWindow() {
@@ -56,8 +64,12 @@ void MainWindow::updatePicture() {
     picLabel.setPixmap(screenshot.scaled(picLabel.size(), Qt::KeepAspectRatio));
 }
 
+void MainWindow::load() {
+    QVariantMap *settings = SettingsFactory::getSettings();
+}
 
 void MainWindow::showEvent(QShowEvent *) {
+    load();
     updatePicture();
 }
 
@@ -65,4 +77,8 @@ void MainWindow::resizeEvent(QResizeEvent *) {
     if (screenshot.isNull())
         return;
     picLabel.setPixmap(screenshot.scaled(picLabel.size(), Qt::KeepAspectRatio));
+}
+
+void MainWindow::save() {
+    SettingsFactory::saveSettings();
 }

@@ -13,10 +13,12 @@ public:
 public slots:
     void delayedScrenshot();
     void updatePicture();
+    void save();
 private:
     QLabel picLabel;
     Screen *screen;
     QPixmap screenshot;
+    void load();
     void showEvent(QShowEvent *);
     void resizeEvent(QResizeEvent *);
 };
