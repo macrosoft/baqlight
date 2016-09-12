@@ -16,6 +16,8 @@ public slots:
 private:
     QLabel picLabel;
     Screen *screen;
+    QPixmap screenshot;
+    void showEvent(QShowEvent *);
     void resizeEvent(QResizeEvent *);
 };
 

@@ -22,7 +22,7 @@ void SerialThread::run() {
     QElapsedTimer timer;
     timer.start();
     while (1) {
-        if (stop)
+        if (stop || !serial.isOpen())
             break;
         mutex.lock();
         screen->capture();
@@ -36,7 +36,7 @@ void SerialThread::run() {
         }
         serial.write(data);
         serial.waitForBytesWritten(1000);
-        qDebug() << "time: " << timer.elapsed();
+        //qDebug() << "time: " << timer.elapsed();
     }
 }
 

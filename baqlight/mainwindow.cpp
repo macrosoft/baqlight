@@ -4,14 +4,16 @@
 
 MainWindow::MainWindow(Screen *s, QWidget *parent)
     : QWidget(parent), screen(s) {
-    QVBoxLayout *layout = new QVBoxLayout();
+    QHBoxLayout *layout = new QHBoxLayout();
     layout->setMargin(0);
     setLayout(layout);
-    QPushButton *updateButton = new QPushButton("update");
-    layout->addWidget(updateButton);
+    layout->addWidget(&picLabel, 10);
+    QVBoxLayout *sidebar = new QVBoxLayout();
+    layout->addLayout(sidebar);
+    QPushButton *updateButton = new QPushButton(tr("Update"));
+    sidebar->addWidget(updateButton);
     connect(updateButton, SIGNAL(clicked(bool)), SLOT(delayedScrenshot()));
-    layout->addWidget(&picLabel);
-    updatePicture();
+    sidebar->addStretch();
 }
 
 MainWindow::~MainWindow() {
@@ -24,12 +26,12 @@ void MainWindow::delayedScrenshot() {
 
 void MainWindow::updatePicture() {
     screen->capture();
-    QPixmap screenshot = screen->getShot();
-    QPainter *painter = new QPainter(&screenshot);
+    screenshot = screen->getShot();
+    QPainter painter(&screenshot);
     for (int i = 0; i < PIXEL_COUNT; i++) {
         const RgbLedPixel *pixel = screen->getPixel(i);
-        painter->setBrush(pixel->getColor());
-        painter->setPen(pixel->getColor());
+        painter.setBrush(pixel->getColor());
+        painter.setPen(pixel->getColor());
         QRect r = pixel->getRect();
         switch (pixel->getAlignment()) {
         case Qt::AlignBottom:
@@ -49,12 +51,18 @@ void MainWindow::updatePicture() {
         default:
             break;
         }
-        painter->drawRect(r);
+        painter.drawRect(r);
     }
     picLabel.setPixmap(screenshot.scaled(picLabel.size(), Qt::KeepAspectRatio));
 }
 
 
+void MainWindow::showEvent(QShowEvent *) {
+    updatePicture();
+}
+
 void MainWindow::resizeEvent(QResizeEvent *) {
-    //updatePicture();
+    if (screenshot.isNull())
+        return;
+    picLabel.setPixmap(screenshot.scaled(picLabel.size(), Qt::KeepAspectRatio));
 }
